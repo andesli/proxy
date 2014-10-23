@@ -8,13 +8,13 @@ import (
 	"net/http"
 	"os"
 	"time"
-	//	"io/ioutil"
 )
 
 type CommonController struct {
 	beego.Controller
 }
 
+//proxy http with post method  to the real https 
 func (this *CommonController) Post() {
 	re := this.Ctx.Input.Request
     beego.Info("request method = post")
@@ -36,10 +36,9 @@ func (this *CommonController) Post() {
 	resp, err := client.Post(url, "application/x-www-form-urlencoded", buf)
 	if err != nil {
 		beego.Info(err.Error())
-	    this.Ctx.ResponseWriter.Write([]byte(err.Error()))
+	    this.Ctx.ResponseWriter.Write([]byte(err.Error() + "\n"))
 	    return 
 	}
-
 
 	beego.Info("reques head: ")
 	resp.Header.Write(os.Stdout)
@@ -51,6 +50,7 @@ func (this *CommonController) Post() {
 	this.Ctx.ResponseWriter.Write(buf2.Bytes())
 }
 
+//proxy http with get method  to the real https 
 func (this *CommonController) Get() {
 	re := this.Ctx.Input.Request
     beego.Info("request method = get")
@@ -66,7 +66,7 @@ func (this *CommonController) Get() {
 	resp, err := client.Get(url)
 	if err != nil {
 		beego.Info(err.Error())
-	    this.Ctx.ResponseWriter.Write([]byte(err.Error()))
+	    this.Ctx.ResponseWriter.Write([]byte(err.Error() + "\n"))
 	    return 
 	}
 
@@ -80,10 +80,17 @@ func (this *CommonController) Get() {
 	this.Ctx.ResponseWriter.Write(buf2.Bytes())
 }
 
+// NewClient创建一个带有超时机制的https客户端
 func NewClient() *http.Client {
+		ct,_  :=  beego.AppConfig.Int64("connecttimeout")
+		rt,_  :=  beego.AppConfig.Int64("readwritetimeout")
+
+		cts :=(time.Duration)(ct)*time.Second
+		rts :=(time.Duration)(rt)*time.Second
+
 	conf := &Config{
-			ConnectTimeout: time.Second*5,
-			ReadWriteTimeout: time.Second*10,
+			ConnectTimeout: cts, 
+			ReadWriteTimeout: rts, 
 	}
 
 	tr := &http.Transport{
@@ -97,9 +104,9 @@ func NewClient() *http.Client {
 	
 }
 
+//turn the proxy http url to the real https url 
 func ProxyUrl( r *http.Request) string {
 	url := r.URL.String()
-    beego.Info("request method = get")
 	beego.Info("request url = " + url)
 
 	index := url[7:11]
@@ -111,3 +118,4 @@ func ProxyUrl( r *http.Request) string {
 	url = url + uri
 	return url
 }
+
