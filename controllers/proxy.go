@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+//	"net/url"
 )
 
 type CommonController struct {
@@ -19,9 +20,11 @@ func (this *CommonController) Post() {
 	re := this.Ctx.Input.Request
 	beego.Info("request method = post")
 
+	beego.Info("request url=" + re.URL.String())
 	beego.Info("body len=", fmt.Sprintf("%d", re.ContentLength))
-	body := this.Ctx.Input.RequestBody
-	//beego.Info("body=" + string(body))
+    body := this.Ctx.Input.RequestBody
+//	body := this.Ctx.Input.Request.Body
+	beego.Info("body=" + string(body))
 	buf := new(bytes.Buffer)
 	buf.Write(body)
 
@@ -34,6 +37,23 @@ func (this *CommonController) Post() {
 
 	client := NewClient()
 	resp, err := client.Post(url, "application/x-www-form-urlencoded", buf)
+/*	
+	request, err := http.NewRequest("post", url, buf)
+	if err != nil {
+		beego.Info(err.Error())
+		this.Ctx.ResponseWriter.Write([]byte(err.Error() + "\n"))
+		return
+	}
+	request.Header.Set("Content-Type",re.Header.Get("Content-Type"))
+*/
+    //request.Write(os.Stdout)
+	/*
+    buf3 := new(bytes.Buffer)
+	buf3.ReadFrom(request.Body)
+	beego.Info(buf3.String())
+	*/
+
+//	resp, err := client.Do(request)
 	if err != nil {
 		beego.Info(err.Error())
 		this.Ctx.ResponseWriter.Write([]byte(err.Error() + "\n"))
