@@ -1,0 +1,37 @@
+1. start the proxy server
+./start.sh  
+
+2. stop the proxy server
+./stop.sh  
+
+3.moniter the proxy server
+./monitor.sh
+
+4.add a new proxy from http to https
+cd ./conf
+vim app.conf
+
+add new url below #url patten
+00xx = https://domain.com:port 
+or
+00xx = https://ip:port 
+
+Note: 
+1.domain.com is setting at /etc/hosts
+2.if port is default 443, port can omitted
+3.don't add uri afer port,proxy get the uri automatically
+
+app server sets the url is: 
+http://proxy-ip:port/proxy/00xx/uri
+
+example :
+  add a new proxy to conf/app.conf below:
+  0001 = https://api.weixin.qq.com
+  app server setting the visitting url is:(note the uri is your application's uri)
+  http://proxy-ip:port/proxy/0001/uri
+
+5.change the prort of proxy server
+  vim conf/app.conf 
+  change the httpport param
+  httpport = 20157 
+
