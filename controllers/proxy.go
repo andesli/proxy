@@ -61,7 +61,7 @@ func (this *CommonController) Post() {
 	}
 
 	beego.Info("reques head: ")
-	resp.Header.Write(os.Stdout)
+//	resp.Header.Write(os.Stdout)
 
 	buf2 := new(bytes.Buffer)
 	buf2.ReadFrom(resp.Body)
