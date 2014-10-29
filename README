@@ -1,3 +1,9 @@
+A Http To Https proxy with go
+===
+proxy is a http to https proxy which writing by golang , it's a tiny a tool. It's just a common tool for my project.
+
+Usage:
+====
 1. start the proxy server
 ./start.sh  
 
